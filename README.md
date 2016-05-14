@@ -2,3 +2,4 @@
 Integración de practicas 5 utilizando diferentes aspectos de diseño
 ##Integrantes
 * Adrian Gonzalez
+Laura Gissel Barreto Siordia
