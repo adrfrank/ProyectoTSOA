@@ -25,10 +25,13 @@ import sistemaDistribuido.sistema.clienteServidor.modoUsuario.Proceso;
 import sistemaDistribuido.util.Escribano;
 import sistemaDistribuido.util.Pausador;
 import sistemaDistribuido.sistema.clienteServidor.modoMonitor.Locales;
+import sistemaDistribuido.sistema.clienteServidor.modoUsuario.ServidorNombres;
 
 
 public class ProcesoServidor extends Proceso{
 
+        public static final String ServerName = "FileServer";
+    
 	/**
 	 * 
 	 */
@@ -44,6 +47,7 @@ public class ProcesoServidor extends Proceso{
 	 */
 	public void run(){
 		imprimeln("Proceso servidor en ejecucion.");
+                int id = ServidorNombres.getInstance().registrarServidor(ServerName, this.dameMaquinaProceso());
                 Locales serLocal = null;             
                 try {
                     serLocal = new Locales(248,dameID(),InetAddress.getLocalHost().getHostAddress());
@@ -64,6 +68,7 @@ public class ProcesoServidor extends Proceso{
                             Nucleo.send(solServidor[0],respServidor);
 		}
                 Nucleo.EliminarLocales(serLocal);
+                ServidorNombres.getInstance().deregistrarServidor(id);
 	}
 
     public void Desempaquetar() {
