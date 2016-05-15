@@ -27,6 +27,7 @@ public class MicroNucleoFrame extends Frame implements WindowListener,Escribano,
 	protected PanelInformador informador;
 	protected PanelIPID destinatario;
 	private WriterManager writerMan=new WriterManager(this);
+        private final ServidorNombresFrame servidorNombres;
 
 	public MicroNucleoFrame(){
 		super("Practicas 1 y 2 - Modelo Cliente/Servidor");
@@ -38,6 +39,7 @@ public class MicroNucleoFrame extends Frame implements WindowListener,Escribano,
 		add("South",construirPanelSur());
 		setSize(500,300);
 		addWindowListener(this);
+                servidorNombres= new ServidorNombresFrame();
 	}
 
 	public void imprime(String s){
@@ -102,6 +104,9 @@ public class MicroNucleoFrame extends Frame implements WindowListener,Escribano,
 			else if (com.equals("Servidor")){
 				levantarProcesoFrame(new ServidorFrame(MicroNucleoFrame.this));
                                  
+			}else if(com.equals("Servidor de Nombres")){
+//				Nucleo.imprimeln("Servidor de nombres iniciado");
+				servidorNombres.setVisible(true);
 			}
 		}
 	}

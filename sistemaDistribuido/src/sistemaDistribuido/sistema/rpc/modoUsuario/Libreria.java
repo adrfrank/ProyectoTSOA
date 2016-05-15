@@ -10,12 +10,13 @@ import java.util.Stack;
 import sistemaDistribuido.util.Escribano;
 
 public abstract class Libreria{
-	private Escribano esc;
+	private final Escribano esc;
         public Stack pila = new Stack();
         public int x;
 
 	/**
 	 * 
+     * @param esc
 	 */
 	public Libreria(Escribano esc){
 		this.esc=esc;
@@ -23,6 +24,7 @@ public abstract class Libreria{
 
 	/**
 	 * 
+     * @param s
 	 */
 	protected void imprime(String s){
 		esc.imprime(s);
