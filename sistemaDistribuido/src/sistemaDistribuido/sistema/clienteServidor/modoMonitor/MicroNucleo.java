@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -18,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import sistemaDistribuido.sistema.clienteServidor.modoMonitor.MicroNucleoBase;
 import sistemaDistribuido.sistema.clienteServidor.modoUsuario.Proceso;
+import sistemaDistribuido.sistema.clienteServidor.modoUsuario.ServidorNombres;
+import sistemaDistribuido.util.ConvertidorPaquetes;
 import sistemaDistribuido.util.Pausador;
 
 /**
@@ -149,9 +152,49 @@ public final class MicroNucleo extends MicroNucleoBase{
 	}
 
 	/**
-	 * Para el(la) encargad@ de direccionamiento por servidor de nombres en pr�ctica 5  
+	 * Para el(la) encargad@ de direccionamiento por servidor de nombres en prï¿½ctica 5  
 	 */
 	protected void sendVerdadero(String dest,byte[] message){
+		//sendFalso(dest,message);
+		imprimeln("El proceso invocante es el "+super.dameIdProceso());
+		println("Buscando en servidor de nombres el par (mï¿½quina, proceso) que corresponde al parï¿½metro dest de la llamada a send");
+		ParMaquinaProceso pmp = ServidorNombres.getInstance().buscarServidor(dest);
+
+		if(pmp == null){
+			println("La solicitud del proceso "+super.dameIdProceso()+" no puede ser atendida");
+			Proceso p = super.dameProcesoLocal(super.dameIdProceso());
+			p.println("La solicitud no puede ser atendida");
+			this.reanudarProceso(p);				
+		}else{
+			TablaEmision.put(pmp.dameID(), pmp);	
+
+
+			imprimeln("Completando campos de encabezado del mensaje a ser enviado");
+			ConvertidorPaquetes solicitud = new ConvertidorPaquetes(message);
+			solicitud.setReceptor(pmp.dameID());
+			solicitud.setEmisor(super.dameIdProceso());
+			DatagramSocket socketEmision;
+			DatagramPacket dp;
+			println("Origen empaquetado: "+solicitud.getEmisor());
+			println("Destino empaquetado: "+solicitud.getReceptor());
+			try{
+				socketEmision=dameSocketEmision();  
+				println("Socket obtenido");
+				dp=new DatagramPacket(message,message.length,InetAddress.getByName(pmp.dameIP()),damePuertoRecepcion());
+				imprimeln("Enviando mensaje a IP="+pmp.dameIP()+" ID="+pmp.dameID());
+				socketEmision.send(dp);			
+				println("Enviado");
+			}catch(SocketException e){
+				println("Error iniciando socket: "+e.getMessage());
+			}catch(UnknownHostException e){
+				println("UnknownHostException: "+e.getMessage());
+			}catch(IOException e){
+				println("IOException: "+e.getMessage());
+			}
+			//no descomentar la sig. linea en la pÅ•actica 2
+			//suspenderProceso();   //esta invocacion depende de si se requiere bloquear al hilo de control invocador
+		}
+
 	}
 
 	/**
