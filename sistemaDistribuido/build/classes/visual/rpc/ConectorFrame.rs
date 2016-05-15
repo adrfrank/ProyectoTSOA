@@ -1,0 +1,3 @@
+sistemaDistribuido.visual.rpc.ConectorFrame$ManejadorBotones
+sistemaDistribuido.visual.rpc.PanelConexion
+sistemaDistribuido.visual.rpc.ConectorFrame

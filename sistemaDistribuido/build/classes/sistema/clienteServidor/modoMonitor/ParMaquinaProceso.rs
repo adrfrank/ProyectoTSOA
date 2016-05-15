@@ -1,0 +1,1 @@
+sistemaDistribuido.sistema.clienteServidor.modoMonitor.ParMaquinaProceso

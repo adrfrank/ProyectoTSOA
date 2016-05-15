@@ -1,0 +1,2 @@
+sistemaDistribuido.visual.clienteServidor.MicroNucleoFrame
+sistemaDistribuido.visual.clienteServidor.MicroNucleoFrame$ManejadorBotones

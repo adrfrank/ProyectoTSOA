@@ -1,0 +1,2 @@
+sistemaDistribuido.visual.rpc.RPCFrame$ManejadorBotones
+sistemaDistribuido.visual.rpc.RPCFrame

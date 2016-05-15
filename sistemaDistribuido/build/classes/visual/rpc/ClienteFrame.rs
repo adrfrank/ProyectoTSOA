@@ -1,0 +1,2 @@
+sistemaDistribuido.visual.rpc.ClienteFrame$ManejadorSolicitud
+sistemaDistribuido.visual.rpc.ClienteFrame

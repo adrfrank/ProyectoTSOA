@@ -1,0 +1,2 @@
+sistemaDistribuido.visual.clienteServidor.ClienteFrame
+sistemaDistribuido.visual.clienteServidor.ClienteFrame$ManejadorSolicitud
