@@ -37,6 +37,10 @@ public class ProyectoFrame extends MicroNucleoFrame{
                    levantarProcesoFrame(new sistemaDistribuido.visual.proyectoLau.ClienteFrame(ProyectoFrame.this));
                 }else if(com.equals("Servidor (Lau)")){
                    levantarProcesoFrame(new sistemaDistribuido.visual.proyectoLau.ServidorFrame(ProyectoFrame.this));
+                }else if(com.equals("Cliente (Giss)")){
+                    levantarProcesoFrame(new sistemaDistribuido.visual.proyectoGiss.ClienteFrame(ProyectoFrame.this));
+                }else if (com.equals("Servidor (Giss)")){
+                    levantarProcesoFrame(new sistemaDistribuido.visual.proyectoGiss.ServidorFrame(ProyectoFrame.this));
                 }
             }
 	}

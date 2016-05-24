@@ -10,7 +10,7 @@ public class ProyectoFramePanel extends Panel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Button btnClienteFrank, btnServerFrank, btnClienteLau, btnServidorLau;
+	Button btnClienteFrank, btnServerFrank, btnClienteLau, btnServidorLau, btnClienteGiss, btnServidorGiss;
         private final Button botonServidorNombres;
         
         
@@ -27,12 +27,20 @@ public class ProyectoFramePanel extends Panel {
             btnServerFrank = new Button("Servidor (Frank)");
             btnClienteLau = new Button("Cliente (Lau)");
             btnServidorLau = new Button("Servidor (Lau)");
+            btnClienteGiss = new Button("Cliente (Giss)");
+            btnServidorGiss = new Button("Servidor (Giss)");
             Panel pnlFrank = new Panel();
+            Panel pnlLau   = new Panel();
+            Panel pnlGiss  = new Panel();
             pnlFrank.add(btnClienteFrank);
             pnlFrank.add(btnServerFrank);
-            pnlFrank.add(btnClienteLau);
-            pnlFrank.add(btnServidorLau);
+            pnlLau.add(btnClienteLau);
+            pnlLau.add(btnServidorLau);
+            pnlGiss.add(btnClienteGiss);
+            pnlGiss.add(btnServidorGiss);
             add(pnlFrank);
+            add(pnlLau);
+            add(pnlGiss);
         }
         
         public void addListener(ActionListener listener){
@@ -43,6 +51,8 @@ public class ProyectoFramePanel extends Panel {
             btnServerFrank.addActionListener(listener);
             btnClienteLau.addActionListener(listener);
             btnServidorLau.addActionListener(listener);
+            btnServidorGiss.addActionListener(listener);
+            btnClienteGiss.addActionListener(listener);
             
         }
 }

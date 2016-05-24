@@ -1,5 +1,6 @@
 package sistemaDistribuido.sistema.clienteServidor.modoMonitor;
 
+import java.util.LinkedList;
 import sistemaDistribuido.sistema.clienteServidor.modoMonitor.ParMaquinaProceso;
 import sistemaDistribuido.sistema.clienteServidor.modoUsuario.Proceso;
 import sistemaDistribuido.util.Escribano;
@@ -86,5 +87,10 @@ public class Nucleo{
 
     public static void EliminarLocales(Locales serLocal) {
            nucleo.eliminaServidorLocal(serLocal);
+    }
+    
+    public static void AgregarBuzon(int id, LinkedList ll)
+    {
+        nucleo.TB.put(id, ll);
     }
 }
