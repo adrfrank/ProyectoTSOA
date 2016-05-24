@@ -28,7 +28,7 @@ public class ProcesoCliente extends Proceso{
 	 */
 	public void run(){
 		imprimeln("Inicio de proceso");
-		imprimeln("Proceso cliente en ejecucion.");
+		imprimeln("Proceso cliente Frank en ejecucion.");
 		imprimeln("Esperando datos para continuar.");
 		while(continuar()){
 			Nucleo.suspenderProceso();

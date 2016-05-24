@@ -13,7 +13,7 @@ import sistemaDistribuido.sistema.clienteServidor.modoUsuario.ServidorNombres;
  */
 public class ProcesoServidor extends Proceso{
 
-	public static final String ServerName = "FileServer";
+	public static final String ServerName = "FileServerFrank";
 	/**
 	 * 
 	 */
@@ -27,7 +27,7 @@ http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1403812	 *
 	 */
 	public void run(){
 		imprimeln("Inicio de proceso");
-		imprimeln("Proceso servidor en ejecucion.");
+		imprimeln("Proceso servidor Frank en ejecucion.");
 		byte[] solServidor=new byte[ConvertidorPaquetes.SOL_LENGTH];
 		byte[] respServidor;
 		int id = ServidorNombres.getInstance().registrarServidor(ServerName, this.dameMaquinaProceso());

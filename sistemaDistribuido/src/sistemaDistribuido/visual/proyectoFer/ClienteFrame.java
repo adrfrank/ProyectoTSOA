@@ -1,6 +1,6 @@
-package sistemaDistribuido.visual.proyectoGiss;
+package sistemaDistribuido.visual.proyectoFer;
 
-//import sistemaDistribuido.visual.clienteServidor.*;
+
 import sistemaDistribuido.sistema.clienteServidor.modoMonitor.Nucleo;
 import sistemaDistribuido.visual.clienteServidor.MicroNucleoFrame;
 import sistemaDistribuido.visual.clienteServidor.ProcesoFrame;
@@ -12,10 +12,12 @@ import java.awt.Panel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-/* Laura Gissel Barreto Siordia
+/**
+ *  Hector Fernando Gonzalez Trujillo
  * D05
  * Practica 1
-*/
+ */
+
 public class ClienteFrame extends ProcesoFrame{
 	private static final long serialVersionUID=1;
 	private ProcesoCliente proc;
@@ -50,7 +52,7 @@ public class ClienteFrame extends ProcesoFrame{
 		p.add(codigosOperacion);
 		p.add(new Label("Datos:"));
 		p.add(campoMensaje);
-		p.add(botonSolicitud); 
+		p.add(botonSolicitud);
 		return p;
 	}
 
@@ -62,7 +64,7 @@ public class ClienteFrame extends ProcesoFrame{
 				com=codigosOperacion.getSelectedItem();
 				imprimeln("Solicitud a enviar: "+com);
 				imprimeln("Mensaje a enviar: "+campoMensaje.getText());
-				proc.CODOP(codigosOperacion.getSelectedIndex(),campoMensaje.getText());
+				proc.recibeDatos(com,campoMensaje.getText());
 				Nucleo.reanudarProceso(proc);
 			}
 		}

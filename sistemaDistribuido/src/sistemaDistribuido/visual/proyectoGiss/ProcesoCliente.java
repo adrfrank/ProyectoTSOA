@@ -23,7 +23,7 @@ public class ProcesoCliente extends Proceso{
 
 	public void run(){
                 imprimeln("Inicio de proceso");
-		imprimeln("Proceso cliente en ejecucion.");
+		imprimeln("Proceso cliente Giss en ejecucion.");
 		imprimeln("Esperando datos para continuar.");
 		Nucleo.suspenderProceso();
 		imprimeln("Generando mensaje a ser enviado, llenando los campos necesarios");
@@ -38,7 +38,7 @@ public class ProcesoCliente extends Proceso{
 		//solCliente[0]=(byte)10;
                 imprimeln("Señalamiento al nucleo para envio de mensajes");
 		//Nucleo.send(248,solCliente); esto enviaba el 248 y ahora tu direccionamiento sera servidor de nombres por lo que necesita una cadena
-                Nucleo.send(sistemaDistribuido.visual.proyectoGiss.ProcesoServidor.ServerName, solCliente);
+                Nucleo.send(ProcesoServidor.ServerName, solCliente);
                 imprimeln("Invocando a receive()");
 		Nucleo.receive(dameID(),respCliente);
                 imprimeln("Procesando respuesta recibida del servidor");

@@ -47,7 +47,7 @@ public class ProcesoServidor extends Proceso{
 	 * 
 	 */
 	public void run(){
-		imprimeln("Proceso servidor en ejecucion.");
+		imprimeln("Proceso servidor Lau en ejecucion.");
                 int id = ServidorNombres.getInstance().registrarServidor(ServerName, this.dameMaquinaProceso());
                 Locales serLocal = null;             
                 try {
@@ -80,10 +80,10 @@ public class ProcesoServidor extends Proceso{
         cad = new String(solServidor,11,solServidor[10]);
         switch(codop){
             case 1:
-                //Para crear el archivo se tiene que poner en el campo de texto con todo y el .txt
+                //Para crear el archivo se tiene que poner en el campo de texto SIN .txt
                 imprimeln("Operacion solicitada: CREAR");
-                imprimeln("Datos para realizar operacion: "+ cad );
-                File archivo = new File (cad);
+                imprimeln("Datos para realizar operacion: "+ cad );                
+                File archivo = new File (cad+".txt");
                 try {
                 if (archivo.createNewFile())
                   mensaje = "El archivo de nombre: "+cad+" fue creado";
@@ -98,10 +98,10 @@ public class ProcesoServidor extends Proceso{
                 System.arraycopy(respu, 0, respServidor, 9, respu.length);                
                 break;
             case 2:  
-                //Para eliminar el archivo se tiene que poner en el campo de texto con todo y el .txt
+                //Para eliminar el archivo se tiene que poner en el campo de texto SIN .txt
                 imprimeln("Operacion solicitada: ELIMINAR");
                 imprimeln("Datos para realizar operacion: "+ cad );
-                File fichero = new File(cad);
+                File fichero = new File(cad+".txt");
                 if (fichero.delete())
                     mensaje = "El archivo de nombre: "+cad+" fue eliminado";
                 else
@@ -111,12 +111,12 @@ public class ProcesoServidor extends Proceso{
                 System.arraycopy(respu, 0, respServidor, 9, respu.length);
                 break;
             case 3:
-                //Para leer del archivo se tiene que poner en el campo de texto con todo y el .txt y solo eso
+                //Para leer del archivo se tiene que poner en el campo de texto solo el nombre del archivo SIN .txt solo eso
             String leer = null;    
                 imprimeln("Operacion solicitada: LEER");
                 imprimeln("Datos para realizar operacion: "+ cad );
                  try{
-            FileInputStream fstream = new FileInputStream(cad);
+            FileInputStream fstream = new FileInputStream(cad+".txt");
             
             DataInputStream entrada = new DataInputStream(fstream);
             
@@ -135,17 +135,17 @@ public class ProcesoServidor extends Proceso{
                 System.arraycopy(respu, 0, respServidor, 9, respu.length);
                 break;
             case 4:
-                //Para escribir en el archivo se tiene que poner en el campo de texto con todo y el .txt seguido de un # que es el limitador y despues lo que quieres escribir
+                //Para escribir en el archivo se tiene que poner en el campo de texto SIN .txt seguido de un # que es el limitador y despues lo que quieres escribir
                 String nombre, escribir;
                 String [] datos = cad.split("#");
                 nombre=datos[0];
                 escribir=datos[1];
                 imprimeln("Operacion solicitada: ESCRIBIR");
                 imprimeln("Datos para realizar operacion: ");
-                imprimeln("Nombre del archivo: "+nombre);
+                imprimeln("Nombre del archivo: "+nombre+".txt");
                 imprimeln("Datos a escribir: "+escribir);
                 File f;
-                f = new File(nombre);
+                f = new File(nombre+".txt");
                 try{
                     FileWriter w = new FileWriter(f);
                     BufferedWriter bw = new BufferedWriter(w);
@@ -153,9 +153,9 @@ public class ProcesoServidor extends Proceso{
                     wr.write(escribir);
                     wr.close();
                     bw.close();
-                    mensaje = "El mensaje fue escrito en el archivo: "+nombre+"";
+                    mensaje = "El mensaje fue escrito en el archivo: "+nombre+".txt ";
                 }catch(IOException e){
-                    mensaje = "El mensaje en el archivoo: "+nombre+" no pudo ser escrito";
+                    mensaje = "El mensaje en el archivoo: "+nombre+".txt  no pudo ser escrito";
                 }
                 
                 respu= mensaje.getBytes(); 

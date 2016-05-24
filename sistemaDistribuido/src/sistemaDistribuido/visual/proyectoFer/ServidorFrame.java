@@ -1,6 +1,5 @@
-package sistemaDistribuido.visual.proyectoGiss;
+package sistemaDistribuido.visual.proyectoFer;
 
-import sistemaDistribuido.visual.clienteServidor.*;
 
 //import sistemaDistribuido.sistema.clienteServidor.modoUsuario.ProcesoServidor;
 import sistemaDistribuido.visual.clienteServidor.MicroNucleoFrame;

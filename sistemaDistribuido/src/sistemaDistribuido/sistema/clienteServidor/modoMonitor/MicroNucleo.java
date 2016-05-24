@@ -32,6 +32,7 @@ public final class MicroNucleo extends MicroNucleoBase{
         private Hashtable<Integer,byte []> TablaRecepcion=new Hashtable<Integer,byte []>();
         LinkedList <Remotos> ProcesosRemotos = new LinkedList<Remotos>();
         LinkedList <Locales> ProcesosLocales = new LinkedList<Locales>();
+        Hashtable<Integer,LinkedList<byte[]>> TB= new Hashtable<Integer,LinkedList<byte[]>>();
         
 	/**
 	 * 

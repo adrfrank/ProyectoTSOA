@@ -17,9 +17,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import sistemaDistribuido.sistema.clienteServidor.modoMonitor.Nucleo;
 import sistemaDistribuido.sistema.clienteServidor.modoUsuario.Proceso;
+import sistemaDistribuido.util.ConvertidorPaquetes;
 import sistemaDistribuido.util.Escribano;
+import sistemaDistribuido.util.ManejadorArchivos;
 import sistemaDistribuido.util.Pausador;
-import sistemaDistribuido.sistema.clienteServidor.modoMonitor.Locales;
 import sistemaDistribuido.sistema.clienteServidor.modoUsuario.ServidorNombres;
 import java.util.LinkedList;
 /*Laura Gissel Barreto Siordia
@@ -36,11 +37,12 @@ public class ProcesoServidor extends Proceso{
 
 	public void run(){
                 imprimeln("Inicio de proceso");
-		imprimeln("Proceso servidor en ejecucion.");
+		imprimeln("Proceso servidor Giss en ejecucion.");
 		byte[] solServidor=new byte[1024];
 		byte[] respServidor = new byte[1024];
                 int id = ServidorNombres.getInstance().registrarServidor(ServerName, this.dameMaquinaProceso());
-		byte dato;
+		
+                byte dato;
                 
                 LinkedList linkedlist= new LinkedList();
                 Nucleo.AgregarBuzon(dameID(), linkedlist);
@@ -141,11 +143,11 @@ public class ProcesoServidor extends Proceso{
                             respServidor[9]=(byte) res.length();
                             System.arraycopy(resp,0,respServidor,10,resp.length);
                         }
-			Pausador.pausa(20000);  //sin esta l�nea es posible que Servidor solicite send antes que Cliente solicite receive
+			//Pausador.pausa(20000);  //sin esta l�nea es posible que Servidor solicite send antes que Cliente solicite receive
 			
                         imprimeln("Señalamiento al nucleo para envio de mensajes");
-			Nucleo.send(solServidor[0],respServidor);
-                        ServidorNombres.getInstance().deregistrarServidor(id);
+			Nucleo.send(solServidor[0],respServidor);                        
 		}
+                ServidorNombres.getInstance().deregistrarServidor(id);
 	}
 }
