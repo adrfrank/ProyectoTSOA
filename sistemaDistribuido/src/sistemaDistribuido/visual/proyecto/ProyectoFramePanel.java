@@ -10,7 +10,7 @@ public class ProyectoFramePanel extends Panel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Button btnClienteFrank, btnServerFrank;
+	Button btnClienteFrank, btnServerFrank, btnClienteLau, btnServidorLau;
         private final Button botonServidorNombres;
         
         
@@ -25,9 +25,13 @@ public class ProyectoFramePanel extends Panel {
             //Repetir esto por cada uno en el equipo
             btnClienteFrank = new Button("Cliente (Frank)");
             btnServerFrank = new Button("Servidor (Frank)");
+            btnClienteLau = new Button("Cliente (Lau)");
+            btnServidorLau = new Button("Servidor (Lau)");
             Panel pnlFrank = new Panel();
             pnlFrank.add(btnClienteFrank);
             pnlFrank.add(btnServerFrank);
+            pnlFrank.add(btnClienteLau);
+            pnlFrank.add(btnServidorLau);
             add(pnlFrank);
         }
         
@@ -37,6 +41,8 @@ public class ProyectoFramePanel extends Panel {
             //repertir esto por cada boton que se agregue al proyecto
             btnClienteFrank.addActionListener(listener);
             btnServerFrank.addActionListener(listener);
+            btnClienteLau.addActionListener(listener);
+            btnServidorLau.addActionListener(listener);
             
         }
 }
