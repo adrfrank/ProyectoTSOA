@@ -5,6 +5,8 @@ import sistemaDistribuido.sistema.clienteServidor.modoUsuario.Proceso;
 import sistemaDistribuido.util.Escribano;
 import microKernelBasedSystem.system.clientServer.userMode.threadPackage.SystemThread;
 
+import java.util.LinkedList;
+
 public class Nucleo{
 	public static MicroNucleo nucleo=MicroNucleo.obtenerMicroNucleo();
 	
@@ -87,4 +89,11 @@ public class Nucleo{
     public static void EliminarLocales(Locales serLocal) {
            nucleo.eliminaServidorLocal(serLocal);
     }
+
+	//****************************************************************************************
+	//Agregado Para almacenamiento
+	public static void AgregarBuzon(int id, LinkedList ll)
+	{
+		nucleo.TB.put(id, ll);
+	}
 }
