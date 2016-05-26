@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sistemaDistribuido.sistema.clienteServidor.modoMonitor.Nucleo;
@@ -55,6 +56,10 @@ public class ProcesoServidor extends Proceso{
                     Logger.getLogger(ProcesoServidor.class.getName()).log(Level.SEVERE, null, ex);
                 }             
                 Nucleo.InsertarLocales(serLocal);
+        //****************************************************************
+        //Agregado para almacenamiento
+        LinkedList linkedlist= new LinkedList();
+        Nucleo.AgregarBuzon(dameID(), linkedlist);
 		while(continuar()){
                         imprimeln("Invocando a receive.");
 			Nucleo.receive(dameID(),solServidor);

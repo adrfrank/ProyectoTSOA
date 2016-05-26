@@ -32,6 +32,10 @@ public final class MicroNucleo extends MicroNucleoBase{
         private Hashtable<Integer,byte []> TablaRecepcion=new Hashtable<Integer,byte []>();
         LinkedList <Remotos> ProcesosRemotos = new LinkedList<Remotos>();
         LinkedList <Locales> ProcesosLocales = new LinkedList<Locales>();
+        //****************************************************************************************
+        //Agregado para almacenamiento
+        Hashtable<Integer,LinkedList<byte[]>> TB= new Hashtable<Integer,LinkedList<byte[]>>();
+        private TablaMsgInesperados tablaMsgInesperados = new TablaMsgInesperados();
         
 	/**
 	 * 
@@ -147,8 +151,24 @@ public final class MicroNucleo extends MicroNucleoBase{
 	protected void receiveVerdadero(int addr,byte[] message){
 		//receiveFalso(addr,message);
 		//el siguiente aplica para la pr�ctica #2
-                TablaRecepcion.put(addr, message);
-		suspenderProceso();
+
+        //****************************************************************************************
+        //Agregado para almacenamiento
+        LinkedList <byte[]> linked = TB.get(addr);
+
+        if((linked==null || linked.size() == 0) && !tablaMsgInesperados.existe(addr))
+        {
+
+            TablaRecepcion.put(addr, message);
+            suspenderProceso();
+
+        }
+        else
+        {
+            byte[] msj= (byte[]) linked.poll();
+            System.arraycopy(msj,0,message,0,msj.length);
+
+        }
 	}
 
 	/**
@@ -213,82 +233,237 @@ public final class MicroNucleo extends MicroNucleoBase{
 	 */
 	public void run(){
             DatagramSocket socketReceptor = dameSocketRecepcion();
-            DatagramPacket dp; 
-            int origen, destino;
-            String ip;
+            DatagramPacket dp;
             byte [] buffer = new byte[1024];
             dp = new DatagramPacket(buffer, buffer.length);
 		while(seguirEsperandoDatagramas()){			                  
 			try{
-                                socketReceptor.receive(dp);
-                                origen = buffer[0];
-                                imprimeln("Origen:  "+origen);
-                                destino = buffer[4];
-                                imprimeln("Destino:  "+destino);
-                                ip = dp.getAddress().getHostAddress();
-                                imprimeln("IP:  "+ip);
-                                Proceso procesolocal = dameProcesoLocal(destino);
-                                if(buffer[1023]==-1){
-                                    //RECIBE UN AU 
-                                        /*imprimeln("Proceso local no encontrado, AUSENCIA DE DESTINATARIO");
-                                        reanudarProceso(procesolocal);*/
-                                        buffer[1023]=(byte)0;                           
-                                        // se envia el destino del buffer[4] y se guarda el servicio que daba para buscar uno nuevo con ese servicio
-                                        int dest = EliminarServidorRemoto(destino); 
-                                        Remotos buscar = obtenerProceso(dest);
-                                        if(buscar!=null){
-                                            buffer[0]= (byte) origen;
-                                            buffer[4]= (byte) buscar.dameID();
-                                            dp = new DatagramPacket(buffer,buffer.length,InetAddress.getByName(buscar.dameIP()),damePuertoRecepcion());
-                                            socketReceptor.send(dp);
-                                        }else{
-                                            HiloEnviarLSA buscarServidor = new HiloEnviarLSA(super.dameIdProceso(), dest, buffer);
-                                            buscarServidor.start();
-                                        }
-                                    }
-                                else if(buffer[8]==-2){
-                                        //LSA
-                                        int servicio=(buffer[10]<<8&0x0000FF00)|(buffer[9]&0x000000FF);
-                                        imprimeln("Mensaje LSA recibido para " + servicio);
-                                        EnviarFSA buscarServidor = new EnviarFSA(servicio,ip);
-                                        buscarServidor.start();
-                                    }
-                                else if(buffer[8]==-3){
-                                        //FSA
-                                        int servicio=(buffer[10]<<8&0x0000FF00)|(buffer[9]&0x000000FF);
-                                        imprimeln("Mensjae FSA recibido para registrar a : "+servicio+" ID: "+buffer[11]+" IP: "+ip);
-                                        Remotos nuevo = new Remotos(servicio,buffer[11],ip);
-                                        ProcesosRemotos.add(nuevo);       
-                                    }                                
-                                else if(procesolocal != null){
-                                    byte [] esperaRecibir = TablaRecepcion.get(destino);
-                                    if(esperaRecibir != null){
-                                    CrearOTE cote = new CrearOTE(ip,origen);
-                                    TablaEmision.put(origen, cote); 
-                                    System.arraycopy(buffer, 0, esperaRecibir, 0, buffer.length);
-                                    TablaRecepcion.remove(destino);
-                                    reanudarProceso(procesolocal);
-                                    }else{ 
-                                        // aqui va el try again                                       
-                                    }
-                                }else{
-                                    System.out.println("SI ENTRE AQUI");
-                                    //AU                                    
-                                    DatagramSocket socketAU = dameSocketRecepcion();
-                                    DatagramPacket dpAU; 
-                                    /*byte [] bufferAU = new byte[1024];
-                                    bufferAU[0]= (byte)0;
-                                    bufferAU[4]= (byte)origen;*/
-                                    buffer[1023]= (byte)-1; 
-                                    try{
-                                        dpAU = new DatagramPacket(buffer,buffer.length,InetAddress.getByName(ip),damePuertoRecepcion());
-                                        socketAU.send(dpAU);
-                                        //socketAU.close();
-                                    }catch (UnknownHostException ex) {
-                                        Logger.getLogger(MicroNucleo.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                    
+                socketReceptor.receive(dp);
+                int origen = buffer[0];
+                imprimeln("Origen:  "+origen);
+                int destino = buffer[4];
+                imprimeln("Destino:  "+destino);
+                String ip = dp.getAddress().getHostAddress();
+                imprimeln("IP:  "+ip);
+                Proceso procesolocal = dameProcesoLocal(destino);
+
+                //****************************************************************************************
+                //Agregado para almacenamiento
+                if (buffer[1023] == -2)//TA
+                {
+                    Thread hiloTA2 = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean continua = true;
+                            while (continua) {
+                                try {
+                                    sleep(5000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
                                 }
+
+                                //considerar cambio origen destino
+
+                                byte[] auxSol = new byte[1024];
+                                System.arraycopy(buffer, 0, auxSol, 0, buffer.length);
+                                auxSol[1023] = 0;
+                                DatagramPacket dpTA = null;
+                                try {
+                                    dpTA = new DatagramPacket(auxSol, auxSol.length, InetAddress.getByName(ip), damePuertoRecepcion());
+                                } catch (UnknownHostException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    dameSocketEmision().send(dpTA);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                imprimeln("INTENTANDO DE NUEVO: "+origen);
+                                continua = false;
+                            }
+
+
+                        }
+                    });
+                    hiloTA2.start();
+
+                }
+                //****************************************************************************************
+                else if(buffer[1023]==-1){
+                    //RECIBE UN AU
+                        /*imprimeln("Proceso local no encontrado, AUSENCIA DE DESTINATARIO");
+                        reanudarProceso(procesolocal);*/
+                        buffer[1023]=(byte)0;
+                        // se envia el destino del buffer[4] y se guarda el servicio que daba para buscar uno nuevo con ese servicio
+                        int dest = EliminarServidorRemoto(destino);
+                        Remotos buscar = obtenerProceso(dest);
+                        if(buscar!=null){
+                            buffer[0]= (byte) origen;
+                            buffer[4]= (byte) buscar.dameID();
+                            dp = new DatagramPacket(buffer,buffer.length,InetAddress.getByName(buscar.dameIP()),damePuertoRecepcion());
+                            socketReceptor.send(dp);
+                        }else{
+                            HiloEnviarLSA buscarServidor = new HiloEnviarLSA(super.dameIdProceso(), dest, buffer);
+                            buscarServidor.start();
+                        }
+                    }
+                else if(buffer[8]==-2){
+                        //LSA
+                        int servicio=(buffer[10]<<8&0x0000FF00)|(buffer[9]&0x000000FF);
+                        imprimeln("Mensaje LSA recibido para " + servicio);
+                        EnviarFSA buscarServidor = new EnviarFSA(servicio,ip);
+                        buscarServidor.start();
+                    }
+                else if(buffer[8]==-3){
+                        //FSA
+                        int servicio=(buffer[10]<<8&0x0000FF00)|(buffer[9]&0x000000FF);
+                        imprimeln("Mensjae FSA recibido para registrar a : "+servicio+" ID: "+buffer[11]+" IP: "+ip);
+                        Remotos nuevo = new Remotos(servicio,buffer[11],ip);
+                        ProcesosRemotos.add(nuevo);
+                    }
+                else if(procesolocal != null)
+                {
+                    byte [] esperaRecibir = TablaRecepcion.get(destino);
+
+                    if(esperaRecibir != null)
+                    {
+                        CrearOTE cote = new CrearOTE(ip,origen);
+                        TablaEmision.put(origen, cote);
+                        System.arraycopy(buffer, 0, esperaRecibir, 0, buffer.length);
+                        TablaRecepcion.remove(destino);
+                        reanudarProceso(procesolocal);
+                    }
+                    /**
+                     * Agregado para almacenamiento
+                     */
+                    else
+                    {
+                        esperaRecibir = TablaRecepcion.get(destino);
+                        if(esperaRecibir != null)
+                        {
+                            DatosTabla dt = new DatosTabla(ip,origen);
+                            TablaEmision.put(origen,dt);
+                            byte[] auxSol = new byte[1024];
+                            System.arraycopy(buffer, 0, auxSol, 0, buffer.length);
+                            TablaRecepcion.remove(destino);
+                            reanudarProceso(procesolocal);
+                        }
+                        else
+                        {
+                            LinkedList <byte[]> linked = TB.get(destino);
+                            if(linked.size() < 3)
+                            {
+                                DatosTabla dt = new DatosTabla(ip,origen);
+                                TablaEmision.put(origen, dt);
+                                byte[] arreglon = new byte[1024];
+                                System.arraycopy(buffer,0,arreglon,0,buffer.length);
+                                linked.offer(arreglon);
+                            }
+                            else
+                            {
+
+                                byte[] auxSol = new byte[1024];
+                                System.arraycopy(buffer, 0, auxSol, 0, buffer.length);
+                                if (!tablaMsgInesperados.existe(destino))
+                                {
+                                    tablaMsgInesperados.agregar(destino, auxSol);
+                                    imprimeln("Agregando a Tabla de Mensajes Inesperados "+destino);
+                                    DatosTabla dt = new DatosTabla(ip,origen);
+                                    TablaEmision.put(origen, dt);
+                                    Thread hiloTA = new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            boolean con = true;
+                                            while (con) {
+
+                                                try {
+                                                    sleep(10000);
+                                                } catch (InterruptedException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                if (tablaMsgInesperados.existe(destino)) {
+                                                    tablaMsgInesperados.quitar(destino);
+                                                    byte[] auxSol = new byte[1024];
+                                                    System.arraycopy(buffer, 0, auxSol, 0, buffer.length);
+
+                                                    if (linked.size()<3)
+                                                    {
+                                                        linked.offer(auxSol);
+                                                    }
+                                                    else
+                                                    {
+                                                        //considerar combiar origen y dest
+                                                        auxSol[1023] = -2;
+                                                        DatagramPacket dpTA = null;
+                                                        try {
+                                                            dpTA = new DatagramPacket(auxSol, auxSol.length, InetAddress.getByName(ip), damePuertoRecepcion());
+                                                        } catch (UnknownHostException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        try {
+                                                            dameSocketEmision().send(dpTA);
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        imprimeln("Mensaje Enviado Try Again");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    imprimeln("Mensaje atendido exitosamente");
+                                                }
+                                                con=false;
+                                            }
+                                        }
+                                    });
+                                    hiloTA.start();
+                                }
+                                else
+                                {
+                                    //considerar cambio origen destino
+                                    DatosTabla dt = new DatosTabla(ip,origen);
+                                    TablaEmision.put(origen, dt);
+                                    byte[] auxSol2 = new byte[1024];
+                                    System.arraycopy(buffer, 0, auxSol2, 0, buffer.length);
+                                    auxSol2[1023] = -2;
+                                    DatagramPacket dpAU = null;
+                                    try {
+                                        dpAU = new DatagramPacket(auxSol2, auxSol2.length, InetAddress.getByName(ip), damePuertoRecepcion());
+                                    } catch (UnknownHostException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        dameSocketEmision().send(dpAU);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    imprimeln("Mensaje Enviado: Try Again");
+                                }
+
+
+                            }
+
+                        }
+                    }
+                }else//AU hilo
+                {
+                    System.out.println("SI ENTRE AQUI");
+                    //AU
+                    DatagramSocket socketAU = dameSocketRecepcion();
+                    DatagramPacket dpAU;
+                    /*byte [] bufferAU = new byte[1024];
+                    bufferAU[0]= (byte)0;
+                    bufferAU[4]= (byte)origen;*/
+                    buffer[1023]= (byte)-1;
+                    try{
+                        dpAU = new DatagramPacket(buffer,buffer.length,InetAddress.getByName(ip),damePuertoRecepcion());
+                        socketAU.send(dpAU);
+                        //socketAU.close();
+                    }catch (UnknownHostException ex) {
+                        Logger.getLogger(MicroNucleo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
 			} catch (IOException ex) {
                     Logger.getLogger(MicroNucleo.class.getName()).log(Level.SEVERE, null, ex);
                 }
