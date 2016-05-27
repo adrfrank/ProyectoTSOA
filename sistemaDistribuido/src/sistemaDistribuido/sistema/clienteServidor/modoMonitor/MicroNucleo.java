@@ -155,24 +155,30 @@ public final class MicroNucleo extends MicroNucleoBase {
         //****************************************************************************************
         //Agregado para almacenamiento
         LinkedList<byte[]> linked = TB.get(addr);
-        if ((linked == null || linked.size() == 0) && !tablaMsgInesperados.existe(addr)) {
+        if ((linked == null || linked.size() == 0) /*&& !tablaMsgInesperados.existe(addr)*/) {
             imprimeln("Buzon vacío y buffer vacío");
             TablaRecepcion.put(addr, message);
             suspenderProceso();
 
         } else {
-            byte[] msj = (byte[]) linked.poll();
+            byte[] msj = new byte[1024];
+            msj = (byte[]) linked.poll();
+            
+            ConvertidorPaquetes cp = new ConvertidorPaquetes(msj);
+            System.out.println("Mensaje obtenido de buzon de:" + cp.getEmisor());
             //Mover al buzon si hay algo en el buffer y el buzon existe
             
-            if(linked.size() < 3 && tablaMsgInesperados.existe(addr)){
+            /*if(linked.size() < 3 && tablaMsgInesperados.existe(addr)){
                 imprimeln("Moviendo mensaje de buffer a buzon");
+                System.out.println("Moviendo mensaje de buffer a buzon");
                 linked.offer(tablaMsgInesperados.obtenerDatos(addr));
                 tablaMsgInesperados.quitar(addr);
                 
-            }
+            }*/
             System.arraycopy(msj, 0, message, 0, msj.length);
-            TablaRecepcion.put(addr, message);
-
+             cp = new ConvertidorPaquetes(message);
+            System.out.println("Mensaje guardado en TablaRecepcion de:" + cp.getEmisor());
+            //TablaRecepcion.put(addr, message);
         }
         
          //Mover al buzon si hay algo en el buffer y el buzon existe
@@ -244,6 +250,10 @@ public final class MicroNucleo extends MicroNucleoBase {
         private byte[] buffer;
         private LinkedList<byte[]> linked;
         private String ip;
+        
+        public TryAgainThread(){
+            this.buffer = new byte[1024];
+        }
 
         @Override
         public void run() {
@@ -347,6 +357,10 @@ public final class MicroNucleo extends MicroNucleoBase {
         private byte[] buffer;
         private String ip;
         private int origen;
+        
+        public TryAgainThread2(){
+            this.buffer = new byte[1024];
+        }
 
         @Override
         public void run() {
@@ -490,6 +504,8 @@ public final class MicroNucleo extends MicroNucleoBase {
                         CrearOTE cote = new CrearOTE(ip, origen);
                         TablaEmision.put(origen, cote);
                         System.arraycopy(buffer, 0, esperaRecibir, 0, buffer.length);
+                        ConvertidorPaquetes cp = new ConvertidorPaquetes(esperaRecibir);
+                        System.out.println("Mensaje copiado a servidor de: "+cp.getEmisor());
                         TablaRecepcion.remove(destino);
                         reanudarProceso(procesolocal);
                     } /**
@@ -505,13 +521,15 @@ public final class MicroNucleo extends MicroNucleoBase {
                             TablaRecepcion.remove(destino);
                             reanudarProceso(procesolocal);
                         } else {
-                            imprimeln("DESTINO ANTES DEL NULL POINTER"+ destino);
+                            System.out.println("DESTINO ANTES DEL NULL POINTER"+ destino);
                             LinkedList<byte[]> linked = TB.get(destino);
-                            if (linked!=null && linked.size() < 3 ) {
+                            if (/*linked!=null &&*/ linked.size() < 3 ) {
                                 DatosTabla dt = new DatosTabla(ip, origen);
                                 TablaEmision.put(origen, dt);
                                 byte[] arreglon = new byte[1024];
                                 System.arraycopy(buffer, 0, arreglon, 0, buffer.length);
+                                ConvertidorPaquetes cp2 = new ConvertidorPaquetes(arreglon);
+                                System.out.println("Guardado en buzón de: "+cp2.getEmisor() );
                                 linked.offer(arreglon);
                             } else {
 
@@ -520,6 +538,7 @@ public final class MicroNucleo extends MicroNucleoBase {
                                 if (!tablaMsgInesperados.existe(destino)) {
                                     tablaMsgInesperados.agregar(destino, auxSol);
                                     imprimeln("Agregando a Tabla de Mensajes Inesperados " + destino);
+                                    System.out.println("Agregando a Tabla de Mensajes Inesperados " + destino);
                                     DatosTabla dt = new DatosTabla(ip, origen);
                                     TablaEmision.put(origen, dt);
                                     TryAgainThread hiloTA = new TryAgainThread();

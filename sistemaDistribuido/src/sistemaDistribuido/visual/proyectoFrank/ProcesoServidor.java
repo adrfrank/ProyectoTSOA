@@ -44,6 +44,7 @@ public class ProcesoServidor extends Proceso {
                 Nucleo.receive(dameID(), solServidor);
 
                 ConvertidorPaquetes cp = new ConvertidorPaquetes(solServidor);
+                 System.out.println("Solicitud recibida de: " + cp.getEmisor());
                 imprimeln("Procesando petición recibida del cliente");
                 short codop = cp.getOptCode();
                 String cdato = cp.getStringData();

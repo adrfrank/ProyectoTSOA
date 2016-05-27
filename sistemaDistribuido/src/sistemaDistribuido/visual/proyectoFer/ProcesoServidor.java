@@ -1,5 +1,6 @@
 package sistemaDistribuido.visual.proyectoFer;
 
+import java.util.LinkedList;
 import sistemaDistribuido.sistema.clienteServidor.modoUsuario.*;
 
 import sistemaDistribuido.sistema.clienteServidor.modoMonitor.Nucleo;
@@ -55,6 +56,9 @@ public class ProcesoServidor extends Proceso{
                 int id = ServidorNombres.getInstance().registrarServidor(ServerName, this.dameMaquinaProceso());
 		byte opc;
 		String resp = "";
+                
+                LinkedList linkedlist= new LinkedList();
+                Nucleo.AgregarBuzon(dameID(), linkedlist);
 		while(continuar()){
 			Nucleo.receive(dameID(),solServidor);
 			imprimeln("Recibiendo mensaje por la red");

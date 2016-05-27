@@ -144,7 +144,7 @@ public class ProcesoServidor extends Proceso{
                             System.arraycopy(resp,0,respServidor,10,resp.length);
                         }
 			//Pausador.pausa(20000);  //sin esta l�nea es posible que Servidor solicite send antes que Cliente solicite receive
-			
+			Pausador.pausa(5000);
                         imprimeln("Señalamiento al nucleo para envio de mensajes");
 			Nucleo.send(solServidor[0],respServidor);                        
 		}

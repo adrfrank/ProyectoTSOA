@@ -65,12 +65,13 @@ public class ProcesoServidor extends Proceso {
             imprimeln("Procesando petición recibida del cliente");
             Desempaquetar();
             imprimeln("Generando mensaje a ser enviado, llenando los campos necesarios");
-            Pausador.pausa(1000);  //sin esta l�nea es posible que Servidor solicite send antes que Cliente solicite receive
+            Pausador.pausa(5000);  //sin esta l�nea es posible que Servidor solicite send antes que Cliente solicite receive
             imprimeln("Enviando Respuesta ");
             imprimeln("DESTINO" + solServidor[0]);
             if (continuar()) {
                 Nucleo.send(solServidor[0], respServidor);
             }
+            
         }
         Nucleo.EliminarLocales(serLocal);
         ServidorNombres.getInstance().deregistrarServidor(id);
