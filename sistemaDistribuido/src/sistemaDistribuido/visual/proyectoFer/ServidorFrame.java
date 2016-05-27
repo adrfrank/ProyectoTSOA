@@ -1,4 +1,5 @@
-package sistemaDistribuido.visual.proyectoFrank;
+package sistemaDistribuido.visual.proyectoFer;
+
 
 //import sistemaDistribuido.sistema.clienteServidor.modoUsuario.ProcesoServidor;
 import sistemaDistribuido.visual.clienteServidor.MicroNucleoFrame;
@@ -9,7 +10,7 @@ public class ServidorFrame extends ProcesoFrame{
   private ProcesoServidor proc;
 
   public ServidorFrame(MicroNucleoFrame frameNucleo){
-    super(frameNucleo,"Servidor de Archivos test");
+    super(frameNucleo,"Servidor de Archivos");
     proc=new ProcesoServidor(this);
     fijarProceso(proc);
   }

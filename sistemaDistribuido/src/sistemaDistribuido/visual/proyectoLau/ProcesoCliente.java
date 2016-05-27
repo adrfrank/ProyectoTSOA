@@ -32,7 +32,7 @@ public class ProcesoCliente extends Proceso{
 	 * 
 	 */
 	public void run(){
-		imprimeln("Proceso cliente en ejecucion.");
+		imprimeln("Proceso cliente Lau en ejecucion.");
 		imprimeln("Esperando datos para continuar.");
 		Nucleo.suspenderProceso();
                 imprimeln("Generando mensaje a ser enviado, llenando los campos necesarios");

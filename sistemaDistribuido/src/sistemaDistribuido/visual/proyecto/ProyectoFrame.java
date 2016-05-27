@@ -34,9 +34,17 @@ public class ProyectoFrame extends MicroNucleoFrame{
                 }else if(com.equals("Servidor de Nombres")){
                     servidorNombres.setVisible(true);
                 }else if(com.equals("Cliente (Lau)")){
-                   levantarProcesoFrame(new sistemaDistribuido.visual.proyectoLau.ClienteFrame(ProyectoFrame.this));
+                    levantarProcesoFrame(new sistemaDistribuido.visual.proyectoLau.ClienteFrame(ProyectoFrame.this));
                 }else if(com.equals("Servidor (Lau)")){
-                   levantarProcesoFrame(new sistemaDistribuido.visual.proyectoLau.ServidorFrame(ProyectoFrame.this));
+                    levantarProcesoFrame(new sistemaDistribuido.visual.proyectoLau.ServidorFrame(ProyectoFrame.this));
+                }else if(com.equals("Cliente (Giss)")){
+                    levantarProcesoFrame(new sistemaDistribuido.visual.proyectoGiss.ClienteFrame(ProyectoFrame.this));
+                }else if(com.equals("Servidor (Giss)")){
+                    levantarProcesoFrame(new sistemaDistribuido.visual.proyectoGiss.ServidorFrame(ProyectoFrame.this));
+                }else if(com.equals("Cliente (Fer)")){
+                    levantarProcesoFrame(new sistemaDistribuido.visual.proyectoFer.ClienteFrame(ProyectoFrame.this));                    
+                }else if(com.equals("Servidor (Fer)")){
+                    levantarProcesoFrame(new sistemaDistribuido.visual.proyectoFer.ServidorFrame(ProyectoFrame.this));
                 }
             }
 	}

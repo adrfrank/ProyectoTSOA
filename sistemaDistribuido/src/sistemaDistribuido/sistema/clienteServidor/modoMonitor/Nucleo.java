@@ -1,5 +1,6 @@
 package sistemaDistribuido.sistema.clienteServidor.modoMonitor;
 
+import java.util.LinkedList;
 import sistemaDistribuido.sistema.clienteServidor.modoMonitor.ParMaquinaProceso;
 import sistemaDistribuido.sistema.clienteServidor.modoUsuario.Proceso;
 import sistemaDistribuido.util.Escribano;
@@ -96,4 +97,5 @@ public class Nucleo{
 	{
 		nucleo.TB.put(id, ll);
 	}
+
 }
