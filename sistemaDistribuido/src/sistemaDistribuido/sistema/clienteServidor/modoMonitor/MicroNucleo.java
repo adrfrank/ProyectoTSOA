@@ -155,18 +155,20 @@ public final class MicroNucleo extends MicroNucleoBase {
         //****************************************************************************************
         //Agregado para almacenamiento
         LinkedList<byte[]> linked = TB.get(addr);
-
-       
         if ((linked == null || linked.size() == 0) && !tablaMsgInesperados.existe(addr)) {
-
+            imprimeln("Buzon vacío y buffer vacío");
             TablaRecepcion.put(addr, message);
             suspenderProceso();
 
         } else {
             byte[] msj = (byte[]) linked.poll();
             //Mover al buzon si hay algo en el buffer y el buzon existe
-            if(linked.size() < 3 && !tablaMsgInesperados.existe(addr)){
+            
+            if(linked.size() < 3 && tablaMsgInesperados.existe(addr)){
+                imprimeln("Moviendo mensaje de buffer a buzon");
                 linked.offer(tablaMsgInesperados.obtenerDatos(addr));
+                tablaMsgInesperados.quitar(addr);
+                
             }
             System.arraycopy(msj, 0, message, 0, msj.length);
             TablaRecepcion.put(addr, message);
@@ -308,7 +310,7 @@ public final class MicroNucleo extends MicroNucleoBase {
          * @param buffer the buffer to set
          */
         public void setBuffer(byte[] buffer) {
-            this.buffer = buffer;
+            System.arraycopy(buffer, 0, this.buffer, 0, buffer.length);
         }
 
         /**
@@ -388,7 +390,8 @@ public final class MicroNucleo extends MicroNucleoBase {
          * @param buffer the buffer to set
          */
         public void setBuffer(byte[] buffer) {
-            this.buffer = buffer;
+            
+            System.arraycopy(buffer, 0, this.buffer, 0, buffer.length);
         }
 
         /**
@@ -502,8 +505,9 @@ public final class MicroNucleo extends MicroNucleoBase {
                             TablaRecepcion.remove(destino);
                             reanudarProceso(procesolocal);
                         } else {
+                            imprimeln("DESTINO ANTES DEL NULL POINTER"+ destino);
                             LinkedList<byte[]> linked = TB.get(destino);
-                            if (linked.size() < 3) {
+                            if (linked!=null && linked.size() < 3 ) {
                                 DatosTabla dt = new DatosTabla(ip, origen);
                                 TablaEmision.put(origen, dt);
                                 byte[] arreglon = new byte[1024];
